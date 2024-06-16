@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clamp Size Docs</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Clamp Size Docs</h1>
+        <p>To use size() function in your scss project you need to:</p>
+        <ol>
+            <li>Install the clamp-size package</li>
+            <li>Import the clamp-size.scss file</li>
+            <li>Fill in <code>$breakpoints</code> array and <code>$base-rem-size</code> variable</li>
+            <li>Use the size() function</li>
+        </ol>
+        
+        <p>There are multiple ways you can use the size() function.</p>
+
+        <p>Feel free to use inspector tools to see how this page works.</p>
+
+        <p>Performance note: consider using css variables to avoid similar calculations.</p>
+
+        <h2 id="basic-usage">Basic Usage</h2>
+        <code><pre>font-size: size(18);</pre></code>
+        <p>This will automatically convert 18px to rem based on the <code>$base-rem-size</code> variable and would return "font-size: 1.125rem" (if the <code>$base-rem-size</code> is set to 16).</p>
+        <p><span class="fixed-18">I'm always 18!</span></p>
+
+        <h2 id="fluid-sizes">Fluid sizes</h2>
+        <code><pre>font-size: size(14, 50);</pre></code>
+        <p>This will make font-size to grow from 14px to 50px from the smallest to the largest breakpoint.</p>
+        <p><span class="grow-14-50">Resize window to see me grow!</span></p>
+        
+        <h2 id="reversed-sizes">Reversed sizes</h2>
+        <code><pre>font-size: size(50, 14);</pre></code>
+        <p>This will make font-size to shrink from 50px to 14px from the smallest to the largest breakpoint.</p>
+        <p><span class="shrink-50-14">I will shrink!</span></p>
+
+        <h2 id="breakpoints">Breakpoints</h2>
+        <code><pre>font-size: size(14, 50, 'sm', 'lg');</pre></code>
+        <p>This will make font-size to grow from 14px to 50px from the 'sm' breakpoint to the 'lg' breakpoint.</p>
+        <p><span class="grow-sm-lg">I will grow! Sometimes.</span></p>
+        <p>Of cource you can use reversed values here too.</p>
+        <code><pre>font-size: size(50, 14, 'sm', 'lg');</pre></code>
+        <p>This will make font-size to shrink from 50px to 14px from the 'sm' breakpoint to the 'lg' breakpoint.</p>
+        <p><span class="shrink-sm-lg">I will shrink! Sometimes.</span></p>
+
+        <h2 id="advanced-usage">Advanced Usage</h2>
+        <p>In some cases we would need a different grow speed for different breakpoints.</p>
+        <code><pre>
+.advanced {
+    font-size: size(14, 18, 'xs', 'md');
+    @media (min-width: #{size(768)}) {
+        font-size: size(18, 50, 'md', 'xxl');
+    }
+}
+        </pre></code>
+        <p>This will make font-size to grow from 14px to 18px from the 'xs' breakpoint to the 'md' breakpoint and shrink from 18px to 50px from the 'md' breakpoint to the 'xxl' breakpoint.</p>
+        <p><span class="advanced">Checkout my grows variabiliy!</span></p>
+        
+        <h2>Current Page Setup</h2>
+        <p>For this page I have used the following breakpoints:</p>
+        <ul>
+            <li>xs: 320px</li>
+            <li>sm: 576px</li>
+            <li>md: 768px</li>
+            <li>lg: 992px</li>
+            <li>xl: 1200px</li>
+            <li>xxl: 1400px</li>
+        </ul>
+        <p>And this is how I've set it up:</p>
+<code>
+<pre>
+    $breakpoints: (
+        xs: size(320),
+        sm: size(576),
+        md: size(768),
+        lg: size(992),
+        xl: size(1200),
+        xxl: size(1400)
+    );
+    $base-rem-size: 16;
+</pre>
+</code>
+    </div>
+</body>
+</html>

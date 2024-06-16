@@ -1,7 +1,7 @@
 /* stylelint-disable scss/no-duplicate-dollar-variables */
 @use "sass:map";
 @use "sass:math";
-@use './helpers.scss';
+@import './helpers.scss';
 
 @function size($a, $b: null, $c: null, $d: null) {
     @if $b != null and $c != null and $d != null {

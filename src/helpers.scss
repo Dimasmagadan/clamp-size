@@ -1,7 +1,10 @@
+@use "sass:map";
 @use "sass:math";
 
 // Helper function to convert px to rem using the global base size
 @function px-to-rem($px) {
+    $base-rem-size: if(global-variable-exists(base-rem-size), $base-rem-size, 16);
+    
     /* stylelint-disable-next-line length-zero-no-unit */
     @return math.div($px, $base-rem-size) + 0rem;
 }

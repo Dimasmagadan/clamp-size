@@ -8,6 +8,10 @@
     "type": "git",
     "url": "https://github.com/Dimasmagadan/clamp-size.git"
   },
+  "scripts": {
+    "compile-scss": "sass docs/scss/main.scss docs/main.css",
+    "watch-scss": "sass --watch docs/scss/main.scss docs/main.css"
+  },
   "keywords": [
     "css",
     "clamp",

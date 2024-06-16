@@ -1,0 +1,81 @@
+@import './../../src/clamp-size.scss';
+
+$breakpoints: (
+    xs: size(320),
+    sm: size(576),
+    md: size(768),
+    lg: size(992),
+    xl: size(1200),
+    xxl: size(1400)
+);
+$base-rem-size: 16;
+
+body {
+    color: #222;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: size(16);
+    line-height: 1.5;
+    background-color: #f2f2f2;
+    text-wrap: balance;
+}
+
+.container {
+    margin-inline: auto;
+    inline-size: size(500,1000);
+    max-inline-size: 90%;
+}
+
+h1 {
+    font-size: size(18, 24);
+}
+
+h2 {
+    font-size: size(16, 20);
+    margin-top: size(60);
+    border-bottom: 1px solid #ccc;
+}
+
+p {
+    font-size: size(14, 18);
+    margin-block: size(12, 16);
+}
+
+span {
+    font-weight: bold;
+    padding: size(10);
+    background-color: #ccc;
+    color: #000;
+}
+
+pre {
+    padding: size(8,14);
+    background-color: #e9e9e9;
+}
+
+// example styles
+.fixed-18 {
+    font-size: size(18);
+}
+
+.grow-14-50 {
+    font-size: size(14, 50);
+}
+
+.shrink-50-14 {
+    font-size: size(50, 14);
+}
+
+.grow-sm-lg {
+    font-size: size(14, 50, 'sm', 'lg');
+}
+
+.shrink-sm-lg {
+    font-size: size(50, 14, 'sm', 'lg');
+}
+
+.advanced {
+    font-size: size(14, 18, 'xs', 'md');
+    @media (min-width: #{size(768)}) {
+        font-size: size(18, 50, 'md', 'xxl');
+    }
+}
