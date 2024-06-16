@@ -1,0 +1,52 @@
+/* stylelint-disable scss/no-duplicate-dollar-variables */
+@use "sass:map";
+@use "sass:math";
+@use './helpers.scss';
+
+@function size($a, $b: null, $c: null, $d: null) {
+    @if $b != null and $c != null and $d != null {
+        @return dynamic-size($a, $b, $c, $d);
+    } @else if $b != null and $c != null and $d == null {
+        @return dynamic-size($a, $b, $c);
+    } @else if $b != null and $c == null and $d == null {
+        @return dynamic-size($a, $b);
+    } @else {
+        @return px-to-rem($a);
+    }
+}
+
+@function dynamic-size($min-size, $max-size, $min-width: null, $max-width: null) {
+    // Set default values if not provided
+    $min-width: if($min-width == null, first-map-value($breakpoints), map.get($breakpoints, $min-width));
+    $max-width: if($max-width == null, last-map-value($breakpoints), map.get($breakpoints, $max-width));
+
+    // Convert all values to rems
+    $min-size-rem: size($min-size);
+    $max-size-rem: size($max-size);
+    $min-width-rem: $min-width;
+    $max-width-rem: $max-width;
+
+    // Check if the first size value is greater than the second
+    @if $min-size-rem > $max-size-rem {
+        // Invert the values for correct calculation
+        $min-size-rem: $min-size-rem * -1;
+        $max-size-rem: $max-size-rem * -1;
+    }
+
+    // Recalculate slope and y-intersection
+    $slope: math.div($max-size-rem - $min-size-rem, $max-width-rem - $min-width-rem);
+    $y-intersection: -($min-width-rem * $slope) + $min-size-rem;
+
+    // Adjust the slope and y-intersection calculations to account for the 100vw unit
+    $slope: $slope * 100;
+
+    // Create the clamp value
+    $clamp-value: clamp(#{$min-size-rem}, calc(#{$y-intersection} + #{$slope}vw), #{$max-size-rem});
+
+    // Return the result, multiplied by -1 if the values were swapped
+    @if $min-size > $max-size {
+        @return calc(#{$clamp-value} * -1);
+    } @else {
+        @return $clamp-value;
+    }
+}

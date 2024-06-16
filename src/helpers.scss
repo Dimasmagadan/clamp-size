@@ -1,0 +1,19 @@
+@use "sass:math";
+
+// Helper function to convert px to rem using the global base size
+@function px-to-rem($px) {
+    /* stylelint-disable-next-line length-zero-no-unit */
+    @return math.div($px, $base-rem-size) + 0rem;
+}
+
+// Function to get the first value of the map
+@function first-map-value($map) {
+    @return map.get($map, nth(map.keys($map), 1));
+}
+
+// Function to get the last value of the map
+@function last-map-value($map) {
+    $keys: map.keys($map);
+
+    @return map.get($map, nth($keys, length($keys)));
+}

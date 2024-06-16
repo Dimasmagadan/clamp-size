@@ -1,0 +1,25 @@
+{
+  "name": "clamp-size",
+  "version": "1.0.0",
+  "description": "An utility finction to calculate clamp values based on breakpoints",
+  "main": "src/clamp-size.scss",
+  "style": "src/clamp-size.scss",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dimasmagadan/clamp-size.git"
+  },
+  "keywords": [
+    "css",
+    "clamp",
+    "responsive"
+  ],
+  "author": "dimasmagadan",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "sass": "^1.70.0"
+  },
+  "bugs": {
+    "url": "https://github.com/Dimasmagadan/clamp-size/issues"
+  },
+  "homepage": "https://github.com/Dimasmagadan/clamp-size#readme"
+}
