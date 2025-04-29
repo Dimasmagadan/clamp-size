@@ -20,6 +20,12 @@ Import the SCSS file into your project:
 @use 'clamp-size/src/clamp' as clamp;
 ```
 
+Or add in your scss file:
+
+```scss
+@forward 'clamp-size';
+```
+
 ### Functions
 
 #### `size($a, $b: null, $c: null, $d: null)`
