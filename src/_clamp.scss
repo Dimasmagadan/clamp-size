@@ -1,0 +1,104 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+
+// Default breakpoints map
+$breakpoints: (
+    'xs': 320,
+    'sm': 576,
+    'md': 768,
+    'lg': 992,
+    'xl': 1200
+) !default;
+
+$base-rem-size: 16 !default;
+
+// Function to get the first value of the map
+@function first-map-value($map) {
+    @return map.get($map, nth(map.keys($map), 1));
+}
+
+// Function to get the last value of the map
+@function last-map-value($map) {
+    $keys: map.keys($map);
+
+    @return map.get($map, nth($keys, length($keys)));
+}
+
+// Helper function to convert px to rem using the global base size
+@function px-to-rem($px) {
+    @return #{math.div($px, $base-rem-size)}rem;
+}
+
+// Simple unitless size function for calculations
+@function size-unitless($value) {
+    @return math.div($value, $base-rem-size);
+}
+
+// Regular size function with units
+// Note: Numeric values passed to size() or csize() are automatically converted to rem units.
+@function size($a, $b: null, $c: null, $d: null) {
+    @if $b != null and $c != null and $d != null {
+        // 4 parameters passed, call dynamic-size with 4 params
+        @return dynamic-size($a, $b, $c, $d);
+    } @else if $b != null and $c != null and $d == null {
+        // 3 parameters passed, call dynamic-size with 3 params
+        @return dynamic-size($a, $b, $c);
+    } @else if $b != null and $c == null and $d == null {
+        // 2 parameters passed, call dynamic-size with 2 params
+        @return dynamic-size($a, $b);
+    } @else {
+        // Only 1 parameter passed, use the px-to-rem function
+        @return px-to-rem($a);
+    }
+}
+
+// Container query size function
+// Note: Numeric values passed to size() or csize() are automatically converted to rem units.
+@function csize($a, $b, $c, $d) {
+    @return dynamic-size($a, $b, $c, $d, 'cqi');
+}
+
+@function dynamic-size($min-size, $max-size, $min-width: null, $max-width: null, $units: 'vw') {
+    // Set default values if not provided
+    $inverted: false;
+    $min-width: if(
+        $min-width == null,
+        first-map-value($breakpoints),
+        if(meta.type-of($min-width) == 'number', $min-width, map.get($breakpoints, $min-width))
+    );
+    $max-width: if(
+        $max-width == null,
+        last-map-value($breakpoints),
+        if(meta.type-of($max-width) == 'number', $max-width, map.get($breakpoints, $max-width))
+    );
+
+    // Check if the first size value is greater than the second
+    @if $min-size > $max-size {
+        // Invert the values for correct calculation
+        $min-size: $min-size * -1;
+        $max-size: $max-size * -1;
+        $inverted: true;
+    }
+
+    // Rems
+    $min-size-rem: size($min-size);
+    $max-size-rem: size($max-size);
+
+    // Recalculate slope and y-intersection
+    $slope: math.div($max-size - $min-size, $max-width - $min-width);
+    $y-intersection: px-to-rem(-($min-width * $slope) + $min-size);
+
+    // Adjust the slope and y-intersection calculations to account for the 100vw unit
+    $slope: $slope * 100;
+
+    // Create the clamp value
+    $clamp-value: clamp(#{$min-size-rem}, calc(#{$y-intersection} + #{$slope}#{$units}), #{$max-size-rem});
+
+    // Return the result, multiplied by -1 if the values were swapped
+    @if $inverted {
+        @return calc(#{$clamp-value} * -1);
+    } @else {
+        @return $clamp-value;
+    }
+}

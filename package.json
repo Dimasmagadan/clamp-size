@@ -1,0 +1,13 @@
+{
+  "name": "clamp-size",
+  "version": "1.0.0",
+  "description": "A lightweight SCSS utility for generating responsive sizes using the clamp() function.",
+  "main": "src/_clamp.scss",
+  "keywords": ["scss", "css", "clamp", "utility"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dimasmagadan/clamp-size"
+  },
+  "author": "dimasmagadan@gmail.com",
+  "license": "MIT"
+}
