@@ -1,13 +1,39 @@
 {
   "name": "clamp-size",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A lightweight SCSS utility for generating responsive sizes using the clamp() function.",
-  "main": "src/_clamp.scss",
-  "keywords": ["scss", "css", "clamp", "utility"],
+  "main": "_index.scss",
+  "files": [
+    "src/",
+    "_index.scss"
+  ],
+  "keywords": [
+    "scss",
+    "css",
+    "clamp",
+    "utility",
+    "fluid-typography",
+    "responsive-typography",
+    "css-clamp",
+    "viewport-units",
+    "container-queries",
+    "responsive-font-size"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Dimasmagadan/clamp-size"
   },
   "author": "dimasmagadan@gmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "lint": "stylelint \"src/**/*.scss\" \"_index.scss\"",
+    "docs:build": "sass docs/style.scss docs/style.css --no-source-map",
+    "docs:check": "npm run docs:build && git diff --exit-code docs/style.css"
+  },
+  "devDependencies": {
+    "sass": "^1.102.0",
+    "stylelint": "^17.14.1",
+    "stylelint-config-standard-scss": "^17.0.0"
+  }
 }

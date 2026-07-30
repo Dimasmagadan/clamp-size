@@ -1,0 +1,110 @@
+// Demo stylesheet — imports the package straight from the repo (../index,
+// i.e. the root _index.scss), not from npm, so this always exercises
+// whatever is currently in src/_clamp.scss.
+@use '../index' as clamp;
+
+:root {
+    color-scheme: light dark;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: clamp.size(16px, 64px) clamp.size(16px, 96px);
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+}
+
+header {
+    margin-bottom: clamp.size(32px, 64px);
+}
+
+h1 {
+    font-size: clamp.size(28px, 56px);
+    margin: 0 0 clamp.size(8px, 16px);
+}
+
+.lede {
+    font-size: clamp.size(16px, 20px);
+    max-width: 60ch;
+    opacity: 0.75;
+}
+
+#viewport-width {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+.demo {
+    margin-bottom: clamp.size(24px, 48px);
+    padding: clamp.size(16px, 24px);
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: 8px;
+}
+
+.demo h2 {
+    font-size: clamp.size(18px, 24px);
+    margin-top: 0;
+}
+
+.demo p {
+    opacity: 0.75;
+}
+
+.demo-fluid-heading {
+    font-size: clamp.size(16px, 24px, 'sm', 'lg');
+    margin: 0;
+    border: 1px dashed color-mix(in srgb, currentColor 30%, transparent);
+    padding: clamp.size(8px, 16px);
+    border-radius: 6px;
+}
+
+.demo-numeric-heading {
+    font-size: clamp.size(10px, 20px, 360px, 1400px);
+    margin: 0;
+    border: 1px dashed color-mix(in srgb, currentColor 30%, transparent);
+    padding: clamp.size(8px, 16px);
+    border-radius: 6px;
+}
+
+.demo-inverted {
+    font-size: clamp.size(24px, 16px, 'sm', 'lg');
+    margin: 0;
+    border: 1px dashed color-mix(in srgb, currentColor 30%, transparent);
+    padding: clamp.size(8px, 16px);
+    border-radius: 6px;
+}
+
+.resizable {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 200px;
+    max-width: 100%;
+    width: 400px;
+    padding: clamp.size(8px, 16px);
+    border: 1px dashed color-mix(in srgb, currentColor 30%, transparent);
+    border-radius: 6px;
+    container-type: inline-size;
+}
+
+.demo-csize {
+    font-size: clamp.csize(14px, 32px, 200px, 800px);
+    margin: 0;
+}
+
+pre {
+    background: color-mix(in srgb, currentColor 6%, transparent);
+    padding: clamp.size(8px, 16px);
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: clamp.size(12px, 14px);
+}
+
+footer {
+    margin-top: clamp.size(32px, 64px);
+    opacity: 0.6;
+    font-size: clamp.size(13px, 14px);
+}

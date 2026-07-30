@@ -9,3 +9,7 @@ yarn-debug.log*
 yarn-error.log*
 .vscode/
 *.tgz
+
+# Tool artifacts
+.mimocode/
+.playwright-mcp/

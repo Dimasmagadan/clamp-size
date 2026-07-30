@@ -1,8 +1,22 @@
-# Clamp Size SCSS Utility
+# clamp-size
+
+Fluid sizes without hand-writing clamp() math.
 
 A lightweight SCSS utility for generating responsive sizes using the `clamp()` function. This package includes helper functions for dynamic sizing based on breakpoints or custom values.
 
 Resulted `clamp()` would have rem, not px units. Please use `csize()` function to use `cqi` units to work with container queries.
+
+## Why not just write `clamp()` by hand?
+
+```scss
+// Hand-written: you compute the slope/intersection yourself, and
+// px→rem conversion, breakpoint lookup, and direction all live in your head.
+font-size: clamp(1rem, 0.3076923077rem + 1.9230769231vw, 1.5rem);
+
+// clamp-size: breakpoints referenced by key, px auto-converted to rem,
+// and size(24px, 16px, ...) inverts correctly if min > max — no hand math.
+font-size: clamp.size(16px, 24px, 'sm', 'lg');
+```
 
 ## Installation
 
@@ -14,16 +28,10 @@ npm install clamp-size
 
 ## Usage
 
-Import the SCSS file into your project:
+Import the package into your project:
 
 ```scss
-@use 'clamp-size/src/clamp' as clamp;
-```
-
-Or add in your scss file:
-
-```scss
-@forward 'clamp-size';
+@use 'clamp-size' as clamp;
 ```
 
 ### Functions
@@ -88,9 +96,7 @@ Converts a pixel value to rem based on the global base size.
 
 ### Configuration
 
-#### Breakpoints
-
-The utility uses a default `$breakpoints` map:
+The utility uses a default `$breakpoints` map and `$base-rem-size`:
 
 ```scss
 $breakpoints: (
@@ -100,24 +106,23 @@ $breakpoints: (
   'lg': 992,
   'xl': 1200
 ) !default;
+
+$base-rem-size: 16 !default;
 ```
 
-You can override this map in your project:
+Both are `@use`-configurable — override them with `with (...)` on the same
+statement that imports the module (this must be the first `@use` of
+`clamp-size` in your build):
 
 ```scss
-$breakpoints: (
-  'mobile': 360,
-  'tablet': 768,
-  'desktop': 1024
+@use 'clamp-size' as clamp with (
+  $breakpoints: (
+    'mobile': 360,
+    'tablet': 768,
+    'desktop': 1024
+  ),
+  $base-rem-size: 16
 );
-```
-
-#### Base Rem Size
-
-Define a `$base-rem-size` variable in your project to set the base size for `px-to-rem` conversions:
-
-```scss
-$base-rem-size: 16;
 ```
 
 ### License

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>clamp-size — live demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>clamp-size</h1>
+    <p class="lede">
+      Fluid sizes without hand-writing clamp() math. This page is styled by
+      <code>docs/style.scss</code>, which imports the package straight from
+      the repo (<code>@use '../index' as clamp;</code>) — not from npm — so
+      resizing this window proves the current source actually works.
+    </p>
+    <p>Viewport width: <span id="viewport-width"></span>px</p>
+  </header>
+
+  <main>
+    <section class="demo">
+      <h2>size() with breakpoint keys</h2>
+      <p>Resize the browser window between the 'sm' (576px) and 'lg' (992px) breakpoints to see it scale.</p>
+      <p class="demo-fluid-heading">Fluid heading text</p>
+      <pre><code>font-size: clamp.size(16px, 24px, 'sm', 'lg');</code></pre>
+    </section>
+
+    <section class="demo">
+      <h2>size() with numeric widths</h2>
+      <p>Same idea, but with explicit pixel widths instead of breakpoint keys.</p>
+      <p class="demo-numeric-heading">Fluid heading text</p>
+      <pre><code>font-size: clamp.size(10px, 20px, 360px, 1400px);</code></pre>
+    </section>
+
+    <section class="demo">
+      <h2>Inverted min/max</h2>
+      <p>
+        <code>$min-size</code> (24px) is larger than <code>$max-size</code> (16px) here — the
+        result still increases smoothly as the viewport shrinks, rather than
+        producing a broken/negative clamp.
+      </p>
+      <p class="demo-inverted">Shrinks as the viewport grows</p>
+      <pre><code>font-size: clamp.size(24px, 16px, 'sm', 'lg');</code></pre>
+    </section>
+
+    <section class="demo">
+      <h2>csize() — container query units</h2>
+      <p>
+        This scales with the box below, not the viewport. Drag its bottom-right
+        corner to resize it (native CSS <code>resize</code>, no JS) and watch the text react.
+      </p>
+      <div class="resizable">
+        <p class="demo-csize">Container-fluid text</p>
+      </div>
+      <pre><code>font-size: clamp.csize(14px, 32px, 200px, 800px);</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      <a href="https://github.com/Dimasmagadan/clamp-size">Source on GitHub</a> ·
+      <code>npm install clamp-size</code>
+    </p>
+  </footer>
+
+  <script>
+    const el = document.getElementById('viewport-width');
+    const update = () => { el.textContent = window.innerWidth; };
+    update();
+    window.addEventListener('resize', update);
+  </script>
+</body>
+</html>

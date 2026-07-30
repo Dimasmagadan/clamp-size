@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use 'sass:map';
 @use 'sass:math';
 @use 'sass:meta';
@@ -10,24 +11,42 @@ $breakpoints: (
     'lg': 992,
     'xl': 1200
 ) !default;
-
 $base-rem-size: 16 !default;
 
 // Function to get the first value of the map
 @function first-map-value($map) {
-    @return map.get($map, nth(map.keys($map), 1));
+    @return map.get($map, list.nth(map.keys($map), 1));
 }
 
 // Function to get the last value of the map
 @function last-map-value($map) {
     $keys: map.keys($map);
 
-    @return map.get($map, nth($keys, length($keys)));
+    @return map.get($map, list.nth($keys, list.length($keys)));
 }
 
-// Helper function to convert px to rem using the global base size
+// Look up a breakpoint by key, erroring on unknown keys instead of
+// silently dividing by null further down the line.
+@function breakpoint-width($key) {
+    @if not map.has-key($breakpoints, $key) {
+        @error "clamp-size: unknown breakpoint '#{$key}'. Available: #{map.keys($breakpoints)}.";
+    }
+
+    @return map.get($breakpoints, $key);
+}
+
+// Discards whatever unit a number carries (px, rem, ...), leaving the raw
+// number. Used to normalize inputs so px-annotated and unitless numbers
+// (both accepted by the public API) can be mixed in the same calculation.
+@function strip-unit($value) {
+    @return math.div($value, $value * 0 + 1);
+}
+
+// Helper function to convert px to rem using the global base size.
+// Accepts both unitless numbers and numbers with a unit (e.g. 16px) — the
+// unit is discarded, the number is always treated as a px count.
 @function px-to-rem($px) {
-    @return #{math.div($px, $base-rem-size)}rem;
+    @return math.div(strip-unit($px), $base-rem-size) * 1rem;
 }
 
 // Simple unitless size function for calculations
@@ -41,10 +60,10 @@ $base-rem-size: 16 !default;
     @if $b != null and $c != null and $d != null {
         // 4 parameters passed, call dynamic-size with 4 params
         @return dynamic-size($a, $b, $c, $d);
-    } @else if $b != null and $c != null and $d == null {
+    } @else if $b != null and $c != null {
         // 3 parameters passed, call dynamic-size with 3 params
         @return dynamic-size($a, $b, $c);
-    } @else if $b != null and $c == null and $d == null {
+    } @else if $b != null {
         // 2 parameters passed, call dynamic-size with 2 params
         @return dynamic-size($a, $b);
     } @else {
@@ -62,16 +81,26 @@ $base-rem-size: 16 !default;
 @function dynamic-size($min-size, $max-size, $min-width: null, $max-width: null, $units: 'vw') {
     // Set default values if not provided
     $inverted: false;
-    $min-width: if(
-        $min-width == null,
-        first-map-value($breakpoints),
-        if(meta.type-of($min-width) == 'number', $min-width, map.get($breakpoints, $min-width))
-    );
-    $max-width: if(
-        $max-width == null,
-        last-map-value($breakpoints),
-        if(meta.type-of($max-width) == 'number', $max-width, map.get($breakpoints, $max-width))
-    );
+
+    @if not $min-width {
+        $min-width: first-map-value($breakpoints);
+    } @else if meta.type-of($min-width) != 'number' {
+        $min-width: breakpoint-width($min-width);
+    }
+
+    @if not $max-width {
+        $max-width: last-map-value($breakpoints);
+    } @else if meta.type-of($max-width) != 'number' {
+        $max-width: breakpoint-width($max-width);
+    }
+
+    // Normalize everything to unitless numbers before doing math on them —
+    // otherwise a px-annotated size mixed with unitless breakpoint widths
+    // (the map default) leaves a stray unit in the vw/cqi slope below.
+    $min-size: strip-unit($min-size);
+    $max-size: strip-unit($max-size);
+    $min-width: strip-unit($min-width);
+    $max-width: strip-unit($max-width);
 
     // Check if the first size value is greater than the second
     @if $min-size > $max-size {
@@ -82,8 +111,8 @@ $base-rem-size: 16 !default;
     }
 
     // Rems
-    $min-size-rem: size($min-size);
-    $max-size-rem: size($max-size);
+    $min-size-rem: px-to-rem($min-size);
+    $max-size-rem: px-to-rem($max-size);
 
     // Recalculate slope and y-intersection
     $slope: math.div($max-size - $min-size, $max-width - $min-width);
