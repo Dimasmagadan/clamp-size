@@ -80,8 +80,6 @@ $base-rem-size: 16 !default;
 
 @function dynamic-size($min-size, $max-size, $min-width: null, $max-width: null, $units: 'vw') {
     // Set default values if not provided
-    $inverted: false;
-
     @if not $min-width {
         $min-width: first-map-value($breakpoints);
     } @else if meta.type-of($min-width) != 'number' {
@@ -102,32 +100,26 @@ $base-rem-size: 16 !default;
     $min-width: strip-unit($min-width);
     $max-width: strip-unit($max-width);
 
-    // Check if the first size value is greater than the second
-    @if $min-size > $max-size {
-        // Invert the values for correct calculation
-        $min-size: $min-size * -1;
-        $max-size: $max-size * -1;
-        $inverted: true;
-    }
-
     // Rems
     $min-size-rem: px-to-rem($min-size);
     $max-size-rem: px-to-rem($max-size);
 
-    // Recalculate slope and y-intersection
+    // Slope and y-intersection. The formula is sign-agnostic: a decreasing
+    // range ($max-size < $min-size) naturally yields a negative slope, no
+    // separate inversion needed.
     $slope: math.div($max-size - $min-size, $max-width - $min-width);
     $y-intersection: px-to-rem(-($min-width * $slope) + $min-size);
 
     // Adjust the slope and y-intersection calculations to account for the 100vw unit
     $slope: $slope * 100;
 
-    // Create the clamp value
-    $clamp-value: clamp(#{$min-size-rem}, calc(#{$y-intersection} + #{$slope}#{$units}), #{$max-size-rem});
-
-    // Return the result, multiplied by -1 if the values were swapped
-    @if $inverted {
-        @return calc(#{$clamp-value} * -1);
+    // clamp() requires its bounds in ascending order regardless of which
+    // one ($min-size or $max-size) is numerically larger. The calc() must
+    // stay written inline (not hoisted to a variable) so Sass's calc-in-clamp
+    // simplification still collapses it during compilation.
+    @if $min-size < $max-size {
+        @return clamp(#{$min-size-rem}, calc(#{$y-intersection} + #{$slope}#{$units}), #{$max-size-rem});
     } @else {
-        @return $clamp-value;
+        @return clamp(#{$max-size-rem}, calc(#{$y-intersection} + #{$slope}#{$units}), #{$min-size-rem});
     }
 }

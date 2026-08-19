@@ -2,6 +2,15 @@
 
 This project follows [Semantic Versioning](https://semver.org/).
 
+## 1.0.3
+
+### Fixed
+
+- Decreasing ranges (`$min-size > $max-size`) emitted
+  `calc(clamp(...) * -1)`, which needs browser support for a math function
+  nested inside `calc()` — a higher bar than plain `clamp()`. Now emitted as
+  a single `clamp()` with ordered bounds and a negative slope instead.
+
 ## 1.0.2
 
 ### Fixed

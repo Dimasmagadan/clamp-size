@@ -34,15 +34,15 @@ test('csize() uses cqi units', () => {
     assert.match(css, /width:\s*clamp\(1rem, 0\.8269230769rem \+ 0\.7692307692cqi, 1\.5rem\);/);
 });
 
-test('size() with $min-size > $max-size stays positive and shrinks as the viewport grows', () => {
+test('size() with $min-size > $max-size shrinks as the viewport grows, without a wrapping calc()', () => {
     const css = compile(".a { font-size: clamp.size(24px, 16px, 'sm', 'lg'); }");
-    // Evaluated by hand against the emitted clamp(): at the 'sm' (576px)
-    // bound the value is 1.5rem, at the 'lg' (992px) bound it's 1rem — a
-    // positive size that decreases as the viewport widens, not a min/max
-    // swap.
+    // Evaluated by hand: at the 'sm' (576px) bound the value is 1.5rem, at
+    // the 'lg' (992px) bound it's 1rem — bounds are emitted in ascending
+    // order with a negative slope, not wrapped in an outer calc(), so this
+    // doesn't need browser support for calc()-nested-in-clamp().
     assert.match(
         css,
-        /font-size:\s*calc\(clamp\(-1\.5rem, -2\.1923076923rem \+ 1\.9230769231vw, -1rem\) \* -1\);/
+        /font-size:\s*clamp\(1rem, 2\.1923076923rem \+ -1\.9230769231vw, 1\.5rem\);/
     );
 });
 
