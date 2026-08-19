@@ -2,6 +2,27 @@
 
 This project follows [Semantic Versioning](https://semver.org/).
 
+## 1.0.4
+
+### Fixed
+
+- `strip-unit()` (used by `px-to-rem()`, `size()`, and `csize()`) now rejects
+  any unit other than unitless or `px` with a descriptive `@error`. Previously
+  a value like `px-to-rem(1rem)` silently treated the `1` as a px count and
+  produced a wrong result (`0.0625rem`) instead of failing.
+- `dynamic-size()` now requires `$min-width < $max-width` and raises a
+  descriptive `@error` otherwise. Equal or reversed width endpoints used to
+  produce invalid CSS (`calc(NaN * 1rem) + calc(infinity)vw`).
+- Fixed a high-severity transitive `nanoid` advisory via `npm audit fix`.
+
+### Documentation
+
+- README: parameter names in `size()`/`csize()`/`px-to-rem()` docs changed
+  from generic `$a`/`$b`/`$c`/`$d` to their actual meaning, with accepted
+  units, default-width behavior, and the new validation errors documented.
+  Corrected `csize()` docs, which incorrectly implied it only accepts numeric
+  widths — it accepts breakpoint keys the same way `size()` does.
+
 ## 1.0.3
 
 ### Fixed

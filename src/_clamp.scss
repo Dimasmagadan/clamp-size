@@ -39,6 +39,10 @@ $base-rem-size: 16 !default;
 // number. Used to normalize inputs so px-annotated and unitless numbers
 // (both accepted by the public API) can be mixed in the same calculation.
 @function strip-unit($value) {
+    @if not (math.is-unitless($value) or math.unit($value) == 'px') {
+        @error "clamp-size: unsupported unit '#{math.unit($value)}' on #{$value}. Only unitless numbers and px are accepted.";
+    }
+
     @return math.div($value, $value * 0 + 1);
 }
 
@@ -99,6 +103,10 @@ $base-rem-size: 16 !default;
     $max-size: strip-unit($max-size);
     $min-width: strip-unit($min-width);
     $max-width: strip-unit($max-width);
+
+    @if $min-width >= $max-width {
+        @error "clamp-size: $min-width (#{$min-width}) must be less than $max-width (#{$max-width}).";
+    }
 
     // Rems
     $min-size-rem: px-to-rem($min-size);

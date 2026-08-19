@@ -36,15 +36,17 @@ Import the package into your project:
 
 ### Functions
 
-#### `size($a, $b: null, $c: null, $d: null)`
+#### `size($min-size, $max-size: null, $min-width: null, $max-width: null)`
 
 Generates a responsive size using the `clamp()` function. This function works with both breakpoints (defined in the `$breakpoints` map) and custom numeric values.
 
 - **Parameters**:
-  - `$a`: Minimum size (required).
-  - `$b`: Maximum size (optional).
-  - `$c`: Minimum width (optional, can be a breakpoint key or a numeric value).
-  - `$d`: Maximum width (optional, can be a breakpoint key or a numeric value).
+  - `$min-size`: Size at `$min-width` (required). Unitless number or `px` — anything else is a build error.
+  - `$max-size`: Size at `$max-width` (optional). Same unit rules as `$min-size`. If `$max-size` is greater than `$min-size` the value grows with the viewport; if smaller, it shrinks. May equal `$min-size` for a constant size.
+  - `$min-width`: Viewport width the size ramp starts at (optional). Either a key from `$breakpoints` (e.g. `'sm'`) or a unitless/`px` number. Defaults to the **first entry** in `$breakpoints` (`'xs'` / 320 by default) — not the numerically smallest one, so an unordered custom map changes this default.
+  - `$max-width`: Viewport width the size ramp ends at (optional). Same rules as `$min-width`, defaults to the **last entry** in `$breakpoints` (`'xl'` / 1200 by default). Must resolve to a value strictly greater than `$min-width`, or it's a build error.
+
+  `$min-size`/`$max-size` are output as `rem` (converted via `$base-rem-size`) regardless of whether you passed `px` or a unitless number. `$min-width`/`$max-width` are only used as unitless pixel counts for the slope math — they never appear as `rem` in the output.
 
 - **Example**:
 
@@ -64,15 +66,11 @@ Using numeric values:
 }
 ```
 
-#### `csize($a, $b, $c, $d)`
+#### `csize($min-size, $max-size, $min-width, $max-width)`
 
-Similar to `size`, but uses container query units (`cqi`) instead of `vw`. This function is better suited for container queries and works best with numeric values for widths.
+Identical to `size()` — same parameter rules, same breakpoint-key-or-number widths — except the output uses container query units (`cqi`) instead of `vw`. Unlike `size()`, all four parameters are required (no defaults).
 
-- **Parameters**:
-  - `$a`: Minimum size (required).
-  - `$b`: Maximum size (required).
-  - `$c`: Minimum width (required, should be a numeric value).
-  - `$d`: Maximum width (required, should be a numeric value).
+- **Parameters**: see `size()` above; `$min-size`, `$max-size`, `$min-width`, `$max-width` all required here.
 
 - **Example**:
 
@@ -84,7 +82,7 @@ Similar to `size`, but uses container query units (`cqi`) instead of `vw`. This 
 
 #### `px-to-rem($px)`
 
-Converts a pixel value to rem based on the global base size.
+Converts a pixel value to rem based on the global base size. Accepts a unitless number or a `px` value; any other unit (e.g. `rem`, `em`, `%`) is a build error.
 
 - **Example**:
 

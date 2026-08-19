@@ -1,6 +1,6 @@
 {
   "name": "clamp-size",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A lightweight SCSS utility for generating responsive sizes using the clamp() function.",
   "main": "_index.scss",
   "files": [

@@ -50,6 +50,38 @@ test('unknown breakpoint key errors instead of dividing by null', () => {
     assert.throws(() => compile(".a { font-size: clamp.size(16px, 24px, 'sm', 'xxl'); }"), /unknown breakpoint 'xxl'/);
 });
 
+test('px-to-rem rejects units other than unitless or px', () => {
+    assert.throws(() => compile('.a { margin: clamp.px-to-rem(1rem); }'), /unsupported unit 'rem'/);
+});
+
+test('size() rejects sizes given in an unsupported unit', () => {
+    assert.throws(
+        () => compile(".a { font-size: clamp.size(1rem, 24px, 'sm', 'lg'); }"),
+        /unsupported unit 'rem'/
+    );
+});
+
+test('size() rejects widths given in an unsupported unit', () => {
+    assert.throws(
+        () => compile('.a { font-size: clamp.size(16px, 24px, 320px, 62rem); }'),
+        /unsupported unit 'rem'/
+    );
+});
+
+test('size() errors on equal $min-width/$max-width instead of emitting NaN/Infinity', () => {
+    assert.throws(
+        () => compile(".a { font-size: clamp.size(16px, 24px, 'sm', 'sm'); }"),
+        /\$min-width \(576\) must be less than \$max-width \(576\)/
+    );
+});
+
+test('size() errors when $min-width is greater than $max-width', () => {
+    assert.throws(
+        () => compile(".a { font-size: clamp.size(16px, 24px, 'lg', 'sm'); }"),
+        /\$min-width \(992\) must be less than \$max-width \(576\)/
+    );
+});
+
 test('$breakpoints and $base-rem-size are configurable via @use ... with', () => {
     const css = compileString(
         `@use 'clamp' with ($breakpoints: ('mobile': 360, 'desktop': 1024), $base-rem-size: 10);
